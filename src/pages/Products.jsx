@@ -5,6 +5,7 @@ import { getApiErrorMessage, getApiMessage, unwrapApiData, unwrapApiList } from 
 import { useToast } from '../contexts/ToastContext';
 import EmptyState from '../components/EmptyState';
 import Modal from '../components/Modal';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { Edit3, Eye, PackageOpen, Plus, Search, Trash2 } from 'lucide-react';
 
 const emptyForm = {
@@ -104,16 +105,23 @@ const Products = () => {
     }
   };
 
-  const deleteProduct = async (product) => {
-    const confirmed = window.confirm(`Delete ${product.name}? This cannot be undone.`);
-    if (!confirmed) return;
+  const openDelete = (product) => {
+    setSelectedProduct(product);
+    setModalMode('delete');
+  };
 
+  const deleteProduct = async () => {
+    if (!selectedProduct) return;
+    setSaving(true);
     try {
-      const response = await productService.deleteProduct(product.id);
+      const response = await productService.deleteProduct(selectedProduct.id);
       toast.success(getApiMessage(response, 'Product deleted successfully.'));
+      setModalMode(null);
       await loadProducts();
     } catch (err) {
       toast.error(getApiErrorMessage(err, 'Failed to delete product.'));
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -187,7 +195,7 @@ const Products = () => {
                           <button className="icon-button" onClick={() => openEdit(product)} aria-label="Edit product">
                             <Edit3 size={16} />
                           </button>
-                          <button className="icon-button danger-icon" onClick={() => deleteProduct(product)} aria-label="Delete product">
+                          <button className="icon-button danger-icon" onClick={() => openDelete(product)} aria-label="Delete product">
                             <Trash2 size={16} />
                           </button>
                         </>
@@ -258,6 +266,17 @@ const Products = () => {
             <span>Created</span><strong>{selectedProduct.created_at ? new Date(selectedProduct.created_at).toLocaleString() : '-'}</strong>
           </div>
         </Modal>
+      )}
+
+      {modalMode === 'delete' && selectedProduct && (
+        <ConfirmDialog
+          title="Delete Product"
+          message={`Delete ${selectedProduct.name}?`}
+          confirmLabel="Delete Product"
+          loading={saving}
+          onCancel={() => setModalMode(null)}
+          onConfirm={deleteProduct}
+        />
       )}
     </div>
   );

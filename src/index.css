@@ -412,8 +412,9 @@ textarea.form-control {
 .status-payment-processing,
 .status-inventory-reserved { background-color: #DBEAFE; color: #1E40AF; }
 .status-completed { background-color: #D1FAE5; color: #065F46; }
-.status-cancelled { background-color: #FEE2E2; color: #B91C1C; }
-.status-failed { background-color: #FEE2E2; color: #B91C1C; }
+.status-cancelled,
+.status-out-of-stock,
+.status-payment-failed { background-color: #FEE2E2; color: #B91C1C; }
 
 /* Dashboard Cards */
 .stat-card {
@@ -718,6 +719,35 @@ textarea.form-control {
   border-radius: var(--radius-md);
 }
 
+.confirm-dialog {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.confirm-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--error-color) 14%, transparent);
+  color: var(--error-color);
+}
+
+.confirm-dialog p {
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: var(--text-primary);
+}
+
+.confirm-dialog span {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+
 :root[data-theme="dark"] .table th,
 :root[data-theme="dark"] .badge-secondary {
   background-color: #1F2937;
@@ -737,7 +767,8 @@ textarea.form-control {
 
 :root[data-theme="dark"] .badge-danger,
 :root[data-theme="dark"] .status-cancelled,
-:root[data-theme="dark"] .status-failed {
+:root[data-theme="dark"] .status-out-of-stock,
+:root[data-theme="dark"] .status-payment-failed {
   background-color: rgba(239, 68, 68, 0.18);
   color: #FCA5A5;
 }

@@ -8,7 +8,7 @@ import EmptyState from '../components/EmptyState';
 import Modal from '../components/Modal';
 import { Eye, Plus, RefreshCw, Search, ShoppingCart } from 'lucide-react';
 
-const ORDER_STATUSES = ['PENDING', 'INVENTORY_RESERVED', 'PAYMENT_PROCESSING', 'COMPLETED', 'FAILED', 'CANCELLED'];
+const ORDER_STATUSES = ['PENDING', 'INVENTORY_RESERVED', 'PAYMENT_PROCESSING', 'COMPLETED', 'PAYMENT_FAILED', 'CANCELLED', 'OUT_OF_STOCK'];
 
 const Orders = () => {
   const { user } = useContext(AuthContext);

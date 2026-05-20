@@ -39,19 +39,26 @@ export const AuthProvider = ({ children }) => {
     navigate('/');
   };
 
-  const register = async (email, password, firstName, lastName, role) => {
+  const register = async (email, password, firstName, lastName) => {
     await authService.register({
       email,
       password,
       first_name: firstName,
-      last_name: lastName,
-      role
+      last_name: lastName
     });
     toast.success('Account created successfully. Please sign in.');
     navigate('/login');
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (refreshToken) {
+      try {
+        await authService.logout(refreshToken);
+      } catch (err) {
+        console.error('Failed to invalidate refresh token', err);
+      }
+    }
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     setUser(null);

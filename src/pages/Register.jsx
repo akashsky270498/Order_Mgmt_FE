@@ -10,7 +10,6 @@ const Register = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('CUSTOMER');
   const [error, setError] = useState('');
   const { register } = useContext(AuthContext);
   const toast = useToast();
@@ -19,7 +18,7 @@ const Register = () => {
     e.preventDefault();
     try {
       setError('');
-      await register(email, password, firstName, lastName, role);
+      await register(email, password, firstName, lastName);
     } catch (err) {
       const message = getApiErrorMessage(err, 'Failed to register. Please check your inputs.');
       setError(message);
@@ -87,19 +86,6 @@ const Register = () => {
             />
           </div>
 
-          <div className="form-group" style={{ textAlign: 'left' }}>
-            <label className="form-label">Account Type (Role)</label>
-            <select
-              className="form-control"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              style={{ background: 'var(--surface-color)', height: '42px' }}
-            >
-              <option value="CUSTOMER">Customer (Standard User)</option>
-              <option value="ADMIN">Admin (Manager)</option>
-            </select>
-          </div>
-          
           <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '0.75rem' }}>
             <UserPlus size={20} />
             Sign Up

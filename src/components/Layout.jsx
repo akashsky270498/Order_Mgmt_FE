@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { LayoutDashboard, LogOut, Moon, Package, ShoppingCart, Sun, User } from 'lucide-react';
+import { LayoutDashboard, LogOut, Moon, Package, ShoppingCart, Sun, User, Users } from 'lucide-react';
 
 const Layout = () => {
   const { user, logout } = useContext(AuthContext);
@@ -13,6 +13,7 @@ const Layout = () => {
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { path: '/orders', label: 'Orders', icon: <ShoppingCart size={20} /> },
     { path: '/products', label: 'Products', icon: <Package size={20} /> },
+    ...(user?.role === 'ADMIN' ? [{ path: '/users', label: 'Users', icon: <Users size={20} /> }] : []),
   ];
 
   return (
