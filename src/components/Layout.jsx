@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
-import { LayoutDashboard, ShoppingCart, Package, LogOut, User } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
+import { LayoutDashboard, LogOut, Moon, Package, ShoppingCart, Sun, User } from 'lucide-react';
 
 const Layout = () => {
   const { user, logout } = useContext(AuthContext);
+  const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
 
   const navItems = [
@@ -37,11 +39,17 @@ const Layout = () => {
       <main className="main-content">
         <header className="header">
           <div className="user-profile">
-            <span style={{ fontWeight: 500 }}>{user?.username}</span>
+            <div className="user-copy">
+              <span>{user?.first_name || user?.email}</span>
+              <small>{user?.role}</small>
+            </div>
             <div className="avatar">
               <User size={20} />
             </div>
-            <button onClick={logout} className="btn btn-danger" style={{ padding: '0.4rem 0.8rem', marginLeft: '1rem' }}>
+            <button onClick={toggleTheme} className="icon-button" aria-label="Toggle dark mode" title="Toggle dark mode">
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <button onClick={logout} className="btn btn-danger compact-btn">
               <LogOut size={16} />
               Logout
             </button>

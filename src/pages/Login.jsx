@@ -2,19 +2,25 @@ import React, { useState, useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { Package, LogIn } from 'lucide-react';
+import { getApiErrorMessage } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login } = useContext(AuthContext);
+  const toast = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setError('');
       await login(email, password);
     } catch (err) {
-      setError(err.response?.data?.msg || 'Invalid email or password');
+      const message = getApiErrorMessage(err, 'Invalid email or password');
+      setError(message);
+      toast.error(message);
     }
   };
 

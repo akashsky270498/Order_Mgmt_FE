@@ -1,29 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import api from '../services/api';
-import { ShoppingCart, Package, DollarSign, Activity } from 'lucide-react';
+import orderService from '../services/orderService';
+import productService from '../services/productService';
+import { getApiErrorMessage, getApiMeta, unwrapApiList } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
+import { Activity, Package, ShoppingCart, WalletCards } from 'lucide-react';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
     totalOrders: 0,
     totalProducts: 0,
-    recentOrders: []
+    recentOrders: [],
+    revenue: 0
   });
+  const toast = useToast();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         const [ordersRes, productsRes] = await Promise.all([
-          api.get('/orders/'),
-          api.get('/products/')
+          orderService.listOrders(),
+          productService.listProducts()
         ]);
         
+        const orders = unwrapApiList(ordersRes);
+        const products = unwrapApiList(productsRes);
+        const revenue = orders.reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
+
         setStats({
-          totalOrders: ordersRes.data.count || ordersRes.data.length || 0,
-          totalProducts: productsRes.data.count || productsRes.data.length || 0,
-          recentOrders: (ordersRes.data.results || ordersRes.data).slice(0, 5)
+          totalOrders: getApiMeta(ordersRes).count || orders.length,
+          totalProducts: getApiMeta(productsRes).count || products.length,
+          recentOrders: orders.slice(0, 5),
+          revenue
         });
       } catch (err) {
         console.error("Failed to fetch dashboard stats", err);
+        toast.error(getApiErrorMessage(err, 'Failed to load dashboard.'));
       }
     };
     
@@ -56,14 +67,20 @@ const Dashboard = () => {
         </div>
         
         <div className="card stat-card">
-          <div className="stat-icon" style={{ backgroundColor: '#FEF3C7', color: '#D97706' }}>
-            <Activity size={24} />
+          <div className="stat-icon warning-icon">
+            <WalletCards size={24} />
           </div>
           <div className="stat-details">
-            <h3>System Status</h3>
-            <p style={{ fontSize: '1.25rem', color: '#059669' }}>Healthy</p>
+            <h3>Order Value</h3>
+            <p>${stats.revenue.toFixed(2)}</p>
           </div>
         </div>
+      </div>
+
+      <div className="status-strip">
+        <Activity size={18} />
+        <span>System status</span>
+        <strong>Healthy</strong>
       </div>
       
       <div className="card">
@@ -83,7 +100,7 @@ const Dashboard = () => {
                 <tr key={order.id}>
                   <td style={{ fontWeight: 500 }}>{order.id.split('-')[0]}...</td>
                   <td>
-                    <span className={`badge status-${order.status.toLowerCase()}`}>
+                    <span className={`badge status-${order.status.toLowerCase().replaceAll('_', '-')}`}>
                       {order.status}
                     </span>
                   </td>

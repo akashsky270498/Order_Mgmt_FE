@@ -2,6 +2,8 @@ import React, { useState, useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { Package, UserPlus } from 'lucide-react';
+import { getApiErrorMessage } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
 
 const Register = () => {
   const [firstName, setFirstName] = useState('');
@@ -11,13 +13,17 @@ const Register = () => {
   const [role, setRole] = useState('CUSTOMER');
   const [error, setError] = useState('');
   const { register } = useContext(AuthContext);
+  const toast = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setError('');
       await register(email, password, firstName, lastName, role);
     } catch (err) {
-      setError(err.response?.data?.msg || 'Failed to register. Please check your inputs.');
+      const message = getApiErrorMessage(err, 'Failed to register. Please check your inputs.');
+      setError(message);
+      toast.error(message);
     }
   };
 
