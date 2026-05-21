@@ -10,6 +10,9 @@ export const unwrapApiData = (response) => {
 export const unwrapApiList = (response) => {
   const payload = response?.data?.data ?? response?.data;
   if (Array.isArray(payload)) {
+    if (payload.length === 1 && Array.isArray(payload[0]?.results)) {
+      return payload[0].results;
+    }
     return payload;
   }
   if (Array.isArray(payload?.results)) {

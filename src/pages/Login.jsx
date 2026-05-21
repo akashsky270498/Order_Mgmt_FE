@@ -64,7 +64,7 @@ const Login = () => {
         </form>
         
         <p style={{ marginTop: '1.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-          Don't have an account? <Link to="/register" style={{ fontWeight: 600 }}>Sign Up</Link>
+          Don't have an account? <Link to="/register" style={{ fontWeight: 600, textDecoration: 'none', color: 'var(--primary-color)' }}>Sign Up</Link>
         </p>
       </div>
     </div>
