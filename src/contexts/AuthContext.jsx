@@ -39,12 +39,13 @@ export const AuthProvider = ({ children }) => {
     navigate('/');
   };
 
-  const register = async (email, password, firstName, lastName) => {
+  const register = async (email, password, firstName, lastName, role = 'CUSTOMER') => {
     await authService.register({
       email,
       password,
       first_name: firstName,
-      last_name: lastName
+      last_name: lastName,
+      role
     });
     toast.success('Account created successfully. Please sign in.');
     navigate('/login');
