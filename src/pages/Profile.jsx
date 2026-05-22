@@ -192,7 +192,7 @@ const Profile = () => {
                 style={{ opacity: 0.6, cursor: 'not-allowed' }}
               />
               <small style={{ color: 'var(--text-secondary)', marginTop: '0.25rem', display: 'block' }}>
-                Role can't be updated.
+                Role cannot be changed
               </small>
             </div>
 
